@@ -84,19 +84,22 @@ let slug = "plastic-bo-f7cl3q";
 
 export async function getStaticPaths() {
     const get = require("lodash/get");
+    const website = require("../website.json");
 
-    const res = await fetch("http://localhost:5038/websites/public/" + slug);
-    const json = await res.json();
-    const pages = get(json, "payload.website.pages", []);
+    // builder always expects JSON from a local file as it doesn't know which website
+    // it is going to get from
+    // const res = await fetch("http://localhost:5038/websites/public/" + slug);
+    // const json = await res.json();
+    const pages = get(website, "pages", []);
 
-    const paths = [
-        { params: { pname: null } },
-        { params: { pname: ["nested-page"] } },
-    ]; /*  pages.map((p) => {
+    const paths = pages.map((p) => {
         return {
-            params: { pname: p.path === "/" ? false : p.path },
+            params: {
+                pname:
+                    p.path === "/" ? false : p.path.split("/").filter((e) => e),
+            },
         };
-    }); */
+    });
 
     console.log("Exporting paths", paths);
 
@@ -107,17 +110,18 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     const get = require("lodash/get");
     const { getNotionPage } = require("../services/notion-service");
+    const website = require("../website.json");
 
     console.log("context.params", context.params);
 
     let path = get(context, "params.pname", []);
     const formattedPath = `${"/" + encodeURI(path.join("/"))}`;
 
-    const res = await fetch("http://localhost:5038/websites/public/" + slug);
-    const json = await res.json();
-    const pages = get(json, "payload.website.pages", []);
+    // const res = await fetch("http://localhost:5038/websites/public/" + slug);
+    // const json = await res.json();
+    // console.log("GOT RES", json);
 
-    console.log("GOT RES", json);
+    const pages = get(website, "pages", []);
 
     let page = {
         id: "",
