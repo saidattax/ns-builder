@@ -122,6 +122,7 @@ export async function getStaticProps(context) {
     // console.log("GOT RES", json);
 
     const pages = get(website, "pages", []);
+    const css = get(website, "css", []);
 
     let page = {
         id: "",
@@ -147,6 +148,7 @@ export async function getStaticProps(context) {
     return {
         props: {
             notionBlocks: page.notionBlocks,
+            css,
             // settings,
             pages,
         }, // will be passed to the page component as props
