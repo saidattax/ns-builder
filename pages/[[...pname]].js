@@ -8,6 +8,7 @@ import "react-notion-x/src/styles.css";
 import { NotionId } from "../utils/string";
 
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Home(props) {
     console.log(props.notionBlocks);
@@ -15,6 +16,16 @@ export default function Home(props) {
     if (!props.notionBlocks) {
         return null;
     }
+
+    useEffect(() => {
+        if (props.css) {
+            const style = document.createElement("style");
+            document.head.append(style);
+            style.textContent = props.css;
+        }
+
+        return () => {};
+    }, []);
 
     function getPrettyPath(id) {
         console.log("getPrettyPath", id, props.pages);
