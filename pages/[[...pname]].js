@@ -20,8 +20,14 @@ export default function Home(props) {
     useEffect(() => {
         if (props.css) {
             const style = document.createElement("style");
-            document.head.append(style);
             style.textContent = props.css;
+            document.head.append(style);
+        }
+
+        if (props.html) {
+            const myDiv = document.createElement("div");
+            myDiv.innerHTML = props.html;
+            document.body.prepend(myDiv);
         }
 
         return () => {};
@@ -134,6 +140,7 @@ export async function getStaticProps(context) {
 
     const pages = get(website, "pages", []);
     const css = get(website, "css", []);
+    const html = get(website, "html", []);
 
     let page = {
         id: "",
@@ -160,6 +167,7 @@ export async function getStaticProps(context) {
         props: {
             notionBlocks: page.notionBlocks,
             css,
+            html,
             // settings,
             pages,
         }, // will be passed to the page component as props
