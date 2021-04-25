@@ -33,7 +33,7 @@ export default function Home(props) {
         if (props.javascript) {
             // const myDiv = document.createElement("div");
             // myDiv.innerHTML = props.html;
-            document.head.append(props.javascript);
+            // document.head.append(props.javascript);
         }
 
         return () => {};
@@ -85,13 +85,15 @@ export default function Home(props) {
                 }}
             ></style>
 
-            <Head>
+            {/* <Head>
                 <script
                     dangerouslySetInnerHTML={{
                         __html: props.javascript || "",
                     }}
                 ></script>
-            </Head>
+            </Head> */}
+
+            <Head>{props.javascript}</Head>
 
             <NotionRenderer
                 components={{
@@ -160,9 +162,9 @@ export async function getStaticProps(context) {
     // console.log("GOT RES", json);
 
     const pages = get(website, "pages", []);
-    const css = get(website, "css", []);
-    const html = get(website, "html", []);
-    const javascript = get(website, "javascript", []);
+    const css = get(website, "css", "");
+    const html = get(website, "html", "");
+    const javascript = get(website, "javascript", "");
 
     let page = {
         id: "",
