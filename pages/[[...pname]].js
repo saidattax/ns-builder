@@ -93,7 +93,13 @@ export default function Home(props) {
                 ></script>
             </Head> */}
 
-            <Head>{props.javascript}</Head>
+            <Head>
+                <div
+                    dangerouslySetInnerHTML={{
+                        __html: props.javascript,
+                    }}
+                ></div>
+            </Head>
 
             <NotionRenderer
                 components={{
