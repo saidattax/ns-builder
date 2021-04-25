@@ -1,4 +1,3 @@
-import Head from "next/head";
 //@ts-ignore
 import styles from "../styles/Home.module.css";
 
@@ -9,6 +8,7 @@ import { NotionId } from "../utils/string";
 
 import Link from "next/link";
 import { useEffect } from "react";
+import Head from "next/head";
 
 export default function Home(props) {
     console.log(props.notionBlocks);
@@ -18,11 +18,11 @@ export default function Home(props) {
     }
 
     useEffect(() => {
-        if (props.css) {
+        /* if (props.css) {
             const style = document.createElement("style");
             style.textContent = props.css;
             document.head.append(style);
-        }
+        } */
 
         if (props.html) {
             const myDiv = document.createElement("div");
@@ -72,6 +72,12 @@ export default function Home(props) {
 
     return (
         <div className={styles.selectText}>
+            {/* <Head> */}
+            {/* custom styles */}
+            <style jsx={true} global={true}>
+                {props.css}
+            </style>
+            {/* </Head> */}
             <NotionRenderer
                 components={{
                     pageLink: (props) => {
