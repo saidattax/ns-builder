@@ -79,6 +79,14 @@ export default function Home(props) {
                 }}
             ></style>
 
+            <Head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: props.javascript || "",
+                    }}
+                ></script>
+            </Head>
+
             <NotionRenderer
                 components={{
                     pageLink: (props) => {
@@ -148,6 +156,7 @@ export async function getStaticProps(context) {
     const pages = get(website, "pages", []);
     const css = get(website, "css", []);
     const html = get(website, "html", []);
+    const javascript = get(website, "javascript", []);
 
     let page = {
         id: "",
@@ -175,6 +184,7 @@ export async function getStaticProps(context) {
             notionBlocks: page.notionBlocks,
             css,
             html,
+            javascript,
             // settings,
             pages,
         }, // will be passed to the page component as props
