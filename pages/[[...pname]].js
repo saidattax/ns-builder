@@ -30,6 +30,12 @@ export default function Home(props) {
             document.body.prepend(myDiv);
         }
 
+        if (props.javascript) {
+            // const myDiv = document.createElement("div");
+            // myDiv.innerHTML = props.html;
+            document.head.append(props.javascript);
+        }
+
         return () => {};
     }, []);
 
