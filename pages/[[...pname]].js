@@ -72,12 +72,14 @@ export default function Home(props) {
 
     return (
         <div className={styles.selectText}>
-            {/* <Head> */}
-            {/* custom styles */}
-            <style jsx={true} global={true}>
-                {props.css}
-            </style>
-            {/* </Head> */}
+            <Head>
+                {/* custom styles */}
+                <style
+                    dangerouslySetInnerHTML={{
+                        __html: props.css,
+                    }}
+                ></style>
+            </Head>
             <NotionRenderer
                 components={{
                     pageLink: (props) => {
