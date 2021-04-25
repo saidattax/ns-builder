@@ -18,11 +18,11 @@ export default function Home(props) {
     }
 
     useEffect(() => {
-        if (props.css) {
+        /* if (props.css) {
             const style = document.createElement("style");
             style.textContent = props.css;
             document.head.append(style);
-        }
+        } */
 
         if (props.html) {
             const myDiv = document.createElement("div");
@@ -73,13 +73,11 @@ export default function Home(props) {
     return (
         <div className={styles.selectText}>
             {/* custom styles */}
-            {/* <Head>
-                <style
-                    dangerouslySetInnerHTML={{
-                        __html: props.css,
-                    }}
-                ></style>
-            </Head> */}
+            <style
+                dangerouslySetInnerHTML={{
+                    __html: props.css,
+                }}
+            ></style>
 
             <NotionRenderer
                 components={{
