@@ -18,24 +18,6 @@ export default function Home(props) {
     }
 
     useEffect(() => {
-        /* if (props.css) {
-            const style = document.createElement("style");
-            style.textContent = props.css;
-            document.head.append(style);
-        } */
-
-        if (props.html) {
-            const myDiv = document.createElement("div");
-            myDiv.innerHTML = props.html;
-            document.body.prepend(myDiv);
-        }
-
-        if (props.javascript) {
-            // const myDiv = document.createElement("div");
-            // myDiv.innerHTML = props.html;
-            // document.head.append(props.javascript);
-        }
-
         return () => {};
     }, []);
 
@@ -78,17 +60,23 @@ export default function Home(props) {
 
     return (
         <div className={styles.selectText}>
+            <div
+                dangerouslySetInnerHTML={{
+                    __html: props.html || "",
+                }}
+            ></div>
+
             {/* custom styles */}
             <style
                 dangerouslySetInnerHTML={{
-                    __html: props.css,
+                    __html: props.css || "",
                 }}
             ></style>
 
             {/* custom JS */}
             <div
                 dangerouslySetInnerHTML={{
-                    __html: props.javascript,
+                    __html: props.javascript || "",
                 }}
             ></div>
 
