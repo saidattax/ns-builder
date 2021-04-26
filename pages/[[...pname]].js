@@ -152,42 +152,36 @@ export async function getStaticProps(context) {
     const css = get(website, "css", "");
     const html = get(website, "html", "");
     const javascript = get(website, "javascript", "");
-    const title = get(website, "title", "");
+
+    const currentPage = pages.find((p) => p.path === formattedPath);
+
+    const title = get(currentPage, "title", "");
 
     console.log("title of this page is", title);
 
-    let page = {
-        id: "",
-        notionBlocks: null,
-    };
-
-    const p = pages.find((p) => p.path === formattedPath);
-
-    const notionUrl = get(p, "notionUrl");
+    const notionUrl = get(currentPage, "notionUrl");
 
     console.log("Got notion Url", notionUrl);
 
-    if (notionUrl) {
-        const res = await getNotionPage(notionUrl);
+    const notionPage = await getNotionPage(notionUrl);
 
-        if (res) {
-            page = res;
-        }
+    if (notionPage) {
+        return {
+            props: {
+                notionBlocks: notionPage.notionBlocks,
+                css,
+                html,
+                title,
+                javascript,
+                // settings,
+                pages,
+            }, // will be passed to the page component as props
+        };
     } else {
-        // redirect to 404
+        return {
+            props: {},
+        };
     }
-
-    return {
-        props: {
-            notionBlocks: page.notionBlocks,
-            css,
-            html,
-            title,
-            javascript,
-            // settings,
-            pages,
-        }, // will be passed to the page component as props
-    };
 }
 
 /* export async function getServerSideProps(context) {
