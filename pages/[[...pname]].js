@@ -154,6 +154,8 @@ export async function getStaticProps(context) {
     const javascript = get(website, "javascript", "");
     const title = get(website, "title", "");
 
+    console.log("title of this page is", title);
+
     let page = {
         id: "",
         notionBlocks: null,
