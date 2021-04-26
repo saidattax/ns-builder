@@ -152,7 +152,7 @@ export async function getStaticProps(context) {
     const css = get(website, "css", "");
     const html = get(website, "html", "");
     const javascript = get(website, "javascript", "");
-    const title = get(website, "javascript", "");
+    const title = get(website, "title", "");
 
     let page = {
         id: "",
