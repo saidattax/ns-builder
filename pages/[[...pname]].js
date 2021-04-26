@@ -60,6 +60,8 @@ export default function Home(props) {
 
     return (
         <div className={styles.selectText}>
+            <Head>{props.title && <title>{props.title}</title>}</Head>
+
             <div
                 dangerouslySetInnerHTML={{
                     __html: props.html || "",
@@ -150,6 +152,7 @@ export async function getStaticProps(context) {
     const css = get(website, "css", "");
     const html = get(website, "html", "");
     const javascript = get(website, "javascript", "");
+    const title = get(website, "javascript", "");
 
     let page = {
         id: "",
@@ -177,6 +180,7 @@ export async function getStaticProps(context) {
             notionBlocks: page.notionBlocks,
             css,
             html,
+            title,
             javascript,
             // settings,
             pages,
