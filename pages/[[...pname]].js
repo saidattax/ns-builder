@@ -119,14 +119,19 @@ export async function getStaticPaths() {
     // const json = await res.json();
     const pages = get(website, "pages", []);
 
-    const paths = pages.map((p) => {
-        return {
-            params: {
-                pname:
-                    p.path === "/" ? false : p.path.split("/").filter((e) => e),
-            },
-        };
-    });
+    const paths = pages
+        // get only public paths
+        .filter((p) => p.visibility === "PUBLIC")
+        .map((p) => {
+            return {
+                params: {
+                    pname:
+                        p.path === "/"
+                            ? false
+                            : p.path.split("/").filter((e) => e),
+                },
+            };
+        });
 
     console.log("Exporting paths", paths);
 
