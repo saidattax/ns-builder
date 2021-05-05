@@ -1,4 +1,5 @@
 const { NotionAPI } = require("notion-client");
+const fetch = require("node-fetch").default;
 
 const api = new NotionAPI();
 
@@ -40,6 +41,26 @@ class NotionId {
     }
 }
 
+async function getNotionPageFromDB(path, websiteId) {
+    const BASE_API_URL = process.env.API_URL;
+
+    const res = await fetch(
+        BASE_API_URL +
+            `/websites/page?path=${encodeURI(path)}&websiteId=${websiteId}`
+    );
+
+    const page = await res.json();
+
+    console.log("getNotionPageFromDB", page);
+
+    if (page && page.id) {
+        return {
+            id: page.id,
+            notionBlocks: page.recordMap,
+        };
+    } else return false;
+}
+
 async function getNotionPage(notionUrl) {
     const m = notionUrl.match(/[a-z0-9]{32}$/);
 
@@ -58,4 +79,5 @@ async function getNotionPage(notionUrl) {
 
 module.exports = {
     getNotionPage,
+    getNotionPageFromDB,
 };

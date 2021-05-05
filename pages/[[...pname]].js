@@ -141,7 +141,10 @@ export async function getStaticPaths() {
 // This function gets called at build time
 export async function getStaticProps(context) {
     const get = require("lodash/get");
-    const { getNotionPage } = require("../services/notion-service");
+    const {
+        getNotionPage,
+        getNotionPageFromDB,
+    } = require("../services/notion-service");
     const website = require("../website.json");
 
     console.log("context.params", context.params);
@@ -168,7 +171,7 @@ export async function getStaticProps(context) {
 
     console.log("Got notion Url", notionUrl);
 
-    const notionPage = await getNotionPage(notionUrl);
+    const notionPage = await getNotionPageFromDB(formattedPath, website.id);
 
     if (notionPage) {
         return {
