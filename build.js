@@ -4,6 +4,10 @@ const fetch = require("node-fetch").default;
 
 function setupWebsiteJSON() {
     return new Promise((resolve, reject) => {
+        if (!process.env.SITE_ID) {
+            reject("Error, no site ID found");
+        }
+
         fetch(
             process.env.BASE_API_URL +
                 process.env.BUILD_EP +
