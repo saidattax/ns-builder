@@ -107,16 +107,12 @@ export default function Home(props) {
     );
 }
 
-let slug = "plastic-bo-f7cl3q";
-
 export async function getStaticPaths() {
     const get = require("lodash/get");
     const website = require("../website.json");
 
     // builder always expects JSON from a local file as it doesn't know which website
     // it is going to get from
-    // const res = await fetch("http://localhost:5038/websites/public/" + slug);
-    // const json = await res.json();
     const pages = get(website, "pages", []);
 
     const paths = pages
@@ -150,9 +146,9 @@ export async function getStaticProps(context) {
     console.log("context.params", context.params);
 
     let path = get(context, "params.pname", []);
+
     const formattedPath = `${"/" + encodeURI(path.join("/"))}`;
 
-    // const res = await fetch("http://localhost:5038/websites/public/" + slug);
     // const json = await res.json();
     // console.log("GOT RES", json);
 
@@ -171,7 +167,8 @@ export async function getStaticProps(context) {
 
     console.log("Got notion Url", notionUrl);
 
-    const notionPage = await getNotionPageFromDB(formattedPath, website.id);
+    // const notionPage = await getNotionPageFromDB(formattedPath, website.id);
+    const notionPage = await getNotionPage(notionUrl);
 
     if (notionPage) {
         return {
@@ -184,7 +181,7 @@ export async function getStaticProps(context) {
                 // settings,
                 pages,
             }, // will be passed to the page component as props
-            revalidate: 1,
+            revalidate: 5,
         };
     } else {
         return {
