@@ -9,10 +9,10 @@ function setupWebsiteJSON() {
         }
 
         fetch(
-            process.env.BASE_API_URL +
-                process.env.BUILD_EP +
+            process.env.NS_BASE_API_URL +
+                process.env.NS_BUILD_EP +
                 "/" +
-                process.env.SITE_ID
+                process.env.NS_SITE_ID
         )
             .then((res) => {
                 res.json()
