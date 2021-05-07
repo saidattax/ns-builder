@@ -22,7 +22,7 @@ export default function Home(props) {
     }, []);
 
     function getPrettyPath(id) {
-        console.log("getPrettyPath", id, props.pages);
+        // console.log("getPrettyPath", id, props.pages);
 
         const notionId = new NotionId(id);
         const page = props.pages.find((p) => p.notionId === notionId.plain);
