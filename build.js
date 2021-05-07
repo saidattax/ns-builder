@@ -52,8 +52,7 @@ setupWebsiteJSON()
                     return;
                 }
                 console.log("[nsbuild] The JSON was saved!");
-
-                execute("yarn build");
+                process.exit(0);
             }
         );
     })
