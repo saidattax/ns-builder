@@ -4,6 +4,13 @@
   functions = "netlify/functions"
   publish = "out"
 
+[context.production.environment]
+  NEXT_SERVERLESS = "true"
+  NODE_ENV = "production"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
   ## Not needed for static site generators.
   #[[redirects]]
