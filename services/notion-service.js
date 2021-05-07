@@ -42,7 +42,7 @@ class NotionId {
 }
 
 async function getNotionPageFromDB(path, websiteId) {
-    const BASE_API_URL = process.env.BASE_API_URL;
+    const BASE_API_URL = process.env.NS_BASE_API_URL;
 
     console.log("[getNotionPageFromDB]", path, websiteId);
 
