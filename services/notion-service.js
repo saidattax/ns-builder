@@ -42,22 +42,27 @@ class NotionId {
 }
 
 async function getNotionPageFromDB(path, websiteId) {
-    const BASE_API_URL = process.env.API_URL;
+    const BASE_API_URL = process.env.BASE_API_URL;
+
+    console.log("[getNotionPageFromDB]", path, websiteId);
 
     const res = await fetch(
         BASE_API_URL + `/websites/${websiteId}/page?path=${encodeURI(path)}`
     );
 
-    const page = await res.json();
+    const json = await res.json();
 
-    console.log("getNotionPageFromDB", page);
+    const page = json.payload.page;
 
-    if (page && page.id) {
+    if (page && page.notionId && page.recordMap) {
         return {
-            id: page.id,
-            notionBlocks: page.recordMap,
+            id: page.notionId,
+            notionBlocks: JSON.parse(page.recordMap),
         };
-    } else return false;
+    } else {
+        console.log("error, page not found!");
+        return false;
+    }
 }
 
 async function getNotionPage(notionUrl) {

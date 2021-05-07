@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import Head from "next/head";
 
 export default function Home(props) {
-    console.log(props.notionBlocks);
+    console.log("[Home]", props.notionBlocks);
 
     if (!props.notionBlocks) {
         return null;
@@ -142,6 +142,7 @@ export async function getStaticProps(context) {
         getNotionPageFromDB,
     } = require("../services/notion-service");
     const website = require("../website.json");
+    const dotenv = require("dotenv");
 
     console.log("context.params", context.params);
 
@@ -161,16 +162,18 @@ export async function getStaticProps(context) {
 
     const title = get(currentPage, "title", "");
 
-    console.log("title of this page is", title);
+    console.log("title of this page is", title, formattedPath);
 
     const notionUrl = get(currentPage, "notionUrl");
 
     console.log("Got notion Url", notionUrl);
 
-    // const notionPage = await getNotionPageFromDB(formattedPath, website.id);
-    const notionPage = await getNotionPage(notionUrl);
+    const notionPage = await getNotionPageFromDB(formattedPath, website.id);
+    // const notionPage = await getNotionPage(notionUrl);
 
     if (notionPage) {
+        console.log("GOT NOTION PAGE", notionPage.id);
+
         return {
             props: {
                 notionBlocks: notionPage.notionBlocks,
@@ -184,6 +187,8 @@ export async function getStaticProps(context) {
             revalidate: 5,
         };
     } else {
+        console.log("DID NOT GET NOTION PAGE, null page");
+
         return {
             props: {},
         };

@@ -41,16 +41,21 @@ function execute(command) {
 
 setupWebsiteJSON()
     .then((websiteJson) => {
+        console.log("GOT websiteJson", websiteJson);
         const fs = require("fs");
-        fs.writeFile("./website.json", websiteJson, function (err) {
-            if (err) {
-                console.error("[nsbuild]", err);
-                return;
-            }
-            console.log("[nsbuild] The JSON was saved!");
+        fs.writeFile(
+            "./website.json",
+            JSON.stringify(websiteJson),
+            function (err) {
+                if (err) {
+                    console.error("[nsbuild]", err);
+                    return;
+                }
+                console.log("[nsbuild] The JSON was saved!");
 
-            execute("yarn build");
-        });
+                execute("yarn build");
+            }
+        );
     })
     .catch((err) => {
         console.error("[nsbuild]", err);
@@ -59,7 +64,7 @@ setupWebsiteJSON()
 
 // --------------------
 
-function setupWebsiteJSONOld() {
+/* function setupWebsiteJSONOld() {
     return new Promise((s, e) => {
         const https = require("http");
 
@@ -103,4 +108,4 @@ function setupWebsiteJSONOld() {
             e("No website id found!");
         }
     });
-}
+} */
