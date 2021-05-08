@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import Head from "next/head";
 
 export default function Home(props) {
-    console.log("[Home]", props.notionBlocks);
+    // console.log("[Home]", props.notionBlocks);
 
     if (!props.notionBlocks) {
         return null;
@@ -85,7 +85,7 @@ export default function Home(props) {
             <NotionRenderer
                 components={{
                     pageLink: (props) => {
-                        console.log("Link props", props);
+                        // console.log("Link props", props);
 
                         return (
                             <Link href={props.href}>
@@ -150,7 +150,10 @@ export async function getStaticProps(context) {
     const websiteJson = require("../website.json");
     const pages = get(websiteJson, "pages", []);
 
+    console.log("Got pages", pages.length);
+
     let path = get(context, "params.pname", []);
+
     const formattedPath = `${"/" + encodeURI(path.join("/"))}`;
 
     console.log(

@@ -1,4 +1,5 @@
 require("dotenv").config();
+const get = require("lodash/get");
 // get website.json
 const fetch = require("node-fetch").default;
 
@@ -18,7 +19,12 @@ function setupWebsiteJSON() {
                 res.json()
                     .then((json) => {
                         if (json.s) {
-                            resolve(json.payload);
+                            const website = get(json, "payload.website");
+                            if (!website) {
+                                reject("API Error, Website JSON not recieved");
+                                return;
+                            }
+                            resolve(website);
                         } else {
                             reject("API Error");
                         }
