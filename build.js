@@ -41,7 +41,7 @@ function execute(command) {
 
 setupWebsiteJSON()
     .then((websiteJson) => {
-        console.log("GOT websiteJson", websiteJson);
+        console.log("GOT websiteJson");
         const fs = require("fs");
         fs.writeFile(
             "./website.json",

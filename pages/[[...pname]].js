@@ -153,6 +153,13 @@ export async function getStaticProps(context) {
     let path = get(context, "params.pname", []);
     const formattedPath = `${"/" + encodeURI(path.join("/"))}`;
 
+    console.log(
+        "got env variables",
+        process.env.NS_BASE_API_URL,
+        process.env.NS_BUILD_EP,
+        process.env.NS_SITE_ID
+    );
+
     // all other website properties are fetched at runtime (for further updating)
     const websiteRes = await fetch(
         process.env.NS_BASE_API_URL +
