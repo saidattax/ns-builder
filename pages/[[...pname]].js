@@ -131,44 +131,56 @@ export async function getStaticPaths() {
 
     console.log("Exporting paths", paths);
 
-    return { paths, fallback: false };
+    return { paths, fallback: true };
 }
 
 // This function gets called at build time
 export async function getStaticProps(context) {
+    const dotenv = require("dotenv");
     const get = require("lodash/get");
+
     const {
         getNotionPage,
         getNotionPageFromDB,
     } = require("../services/notion-service");
-    const website = require("../website.json");
-    const dotenv = require("dotenv");
 
     console.log("context.params", context.params);
 
-    let path = get(context, "params.pname", []);
+    // pages are fetched from website json
+    const websiteJson = require("../website.json");
+    const pages = get(websiteJson, "pages", []);
 
+    let path = get(context, "params.pname", []);
     const formattedPath = `${"/" + encodeURI(path.join("/"))}`;
+
+    // all other website properties are fetched at runtime (for further updating)
+    const websiteRes = await fetch(
+        process.env.NS_BASE_API_URL +
+            process.env.NS_BUILD_EP +
+            "/" +
+            process.env.NS_SITE_ID
+    );
+
+    const website = await websiteRes.json();
+
+    // global website details
+    const css = get(website, "cssProd", "");
+    const html = get(website, "htmlProd", "");
+    const javascript = get(website, "javascriptProd", "");
 
     // const json = await res.json();
     // console.log("GOT RES", json);
 
-    const pages = get(website, "pages", []);
-    const css = get(website, "css", "");
-    const html = get(website, "html", "");
-    const javascript = get(website, "javascript", "");
-
+    // current page details
     const currentPage = pages.find((p) => p.path === formattedPath);
-
     const title = get(currentPage, "title", "");
-
-    console.log("title of this page is", title, formattedPath);
-
     const notionUrl = get(currentPage, "notionUrl");
 
-    console.log("Got notion Url", notionUrl);
-
     const notionPage = await getNotionPageFromDB(formattedPath, website.id);
+
+    console.log("Got notion Url", notionUrl);
+    console.log("title of this page is", title, formattedPath);
+
     // const notionPage = await getNotionPage(notionUrl);
 
     if (notionPage) {
@@ -177,9 +189,9 @@ export async function getStaticProps(context) {
         return {
             props: {
                 notionBlocks: notionPage.notionBlocks,
+                title,
                 css,
                 html,
-                title,
                 javascript,
                 // settings,
                 pages,
