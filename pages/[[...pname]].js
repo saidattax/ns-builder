@@ -168,12 +168,12 @@ export async function getStaticProps(context) {
             process.env.NS_SITE_ID
     );
 
-    const website = await websiteRes.json();
+    const resJson = await websiteRes.json();
 
     // global website details
-    const css = get(website, "cssProd", "");
-    const html = get(website, "htmlProd", "");
-    const javascript = get(website, "javascriptProd", "");
+    const css = get(resJson, "payload.website.cssProd", "");
+    const html = get(resJson, "payload.website.htmlProd", "");
+    const javascript = get(resJson, "payload.website.javascriptProd", "");
 
     // const json = await res.json();
     // console.log("GOT RES", json);
@@ -183,7 +183,10 @@ export async function getStaticProps(context) {
     const title = get(currentPage, "title", "");
     const notionUrl = get(currentPage, "notionUrl");
 
-    const notionPage = await getNotionPageFromDB(formattedPath, website.id);
+    const notionPage = await getNotionPageFromDB(
+        formattedPath,
+        process.env.NS_SITE_ID
+    );
 
     console.log("Got notion Url", notionUrl);
     console.log("title of this page is", title, formattedPath);
