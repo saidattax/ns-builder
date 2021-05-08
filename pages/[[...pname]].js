@@ -108,12 +108,23 @@ export default function Home(props) {
 }
 
 export async function getStaticPaths() {
+    const dotenv = require("dotenv");
     const get = require("lodash/get");
-    const website = require("../website.json");
 
     // builder always expects JSON from a local file as it doesn't know which website
     // it is going to get from
-    const pages = get(website, "pages", []);
+    const websiteRes = await fetch(
+        process.env.NS_BASE_API_URL +
+            process.env.NS_BUILD_EP +
+            "/" +
+            process.env.NS_SITE_ID
+    );
+
+    const resJson = await websiteRes.json();
+
+    const pages = get(resJson, "payload.website.pages", []);
+
+    console.log("[getStaticPaths] Got pages", pages.length);
 
     const paths = pages
         // get only public paths
@@ -147,10 +158,7 @@ export async function getStaticProps(context) {
     console.log("context.params", context.params);
 
     // pages are fetched from website json
-    const websiteJson = require("../website.json");
-    const pages = get(websiteJson, "pages", []);
-
-    console.log("Got pages", pages.length);
+    // const websiteJson = require("../website.json");
 
     let path = get(context, "params.pname", []);
 
@@ -172,6 +180,9 @@ export async function getStaticProps(context) {
     );
 
     const resJson = await websiteRes.json();
+
+    const pages = get(resJson, "payload.website.pages", []);
+    console.log("Got pages", pages.length);
 
     // global website details
     const css = get(resJson, "payload.website.cssProd", "");
