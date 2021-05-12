@@ -47,7 +47,7 @@ async function getNotionPageFromDB(path, websiteId) {
     console.log("[getNotionPageFromDB]", path, websiteId);
 
     const res = await fetch(
-        BASE_API_URL + `/websites/${websiteId}/page?path=${encodeURI(path)}`
+        BASE_API_URL + `/websites/${websiteId}/pages?path=${encodeURI(path)}`
     );
 
     const json = await res.json();
