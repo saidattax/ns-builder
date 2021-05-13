@@ -5,13 +5,21 @@ import { NotionRenderer, Pdf } from "react-notion-x";
 
 import "react-notion-x/src/styles.css";
 import { NotionId } from "../utils/string";
-
+import { useRouter } from "next/router";
 import Link from "next/link";
 import { useEffect } from "react";
 import Head from "next/head";
 
 export default function Home(props) {
     // console.log("[Home]", props.notionBlocks);
+
+    const router = useRouter();
+
+    // If the page is not yet generated, this will be displayed
+    // initially until getStaticProps() finishes running
+    if (router.isFallback) {
+        return <div>Loading...</div>;
+    }
 
     if (!props.notionBlocks) {
         return null;
