@@ -18,7 +18,7 @@ export default function Home(props) {
     // If the page is not yet generated, this will be displayed
     // initially until getStaticProps() finishes running
     if (router.isFallback) {
-        return <div>Loading...</div>;
+        return <div>⚡ Preparing...</div>;
     }
 
     if (!props.notionBlocks) {
@@ -121,117 +121,130 @@ export async function getStaticPaths() {
 
     // builder always expects JSON from a local file as it doesn't know which website
     // it is going to get from
-    const websiteRes = await fetch(
-        process.env.NS_BASE_API_URL +
-            process.env.NS_BUILD_EP +
-            "/" +
-            process.env.NS_SITE_ID
-    );
+    try {
+        const websiteRes = await fetch(
+            process.env.NS_BASE_API_URL +
+                process.env.NS_BUILD_EP +
+                "/" +
+                process.env.NS_SITE_ID
+        );
+        const resJson = await websiteRes.json();
 
-    const resJson = await websiteRes.json();
+        const pages = get(resJson, "payload.website.pages", []);
 
-    const pages = get(resJson, "payload.website.pages", []);
+        console.log("[getStaticPaths] Got pages", pages.length);
 
-    console.log("[getStaticPaths] Got pages", pages.length);
+        const paths = pages
+            // get only public paths
+            .filter((p) => p.visibility === "PUBLIC")
+            .map((p) => {
+                return {
+                    params: {
+                        pname:
+                            p.path === "/"
+                                ? false
+                                : p.path.split("/").filter((e) => e),
+                    },
+                };
+            });
 
-    const paths = pages
-        // get only public paths
-        .filter((p) => p.visibility === "PUBLIC")
-        .map((p) => {
-            return {
-                params: {
-                    pname:
-                        p.path === "/"
-                            ? false
-                            : p.path.split("/").filter((e) => e),
-                },
-            };
-        });
+        console.log("Exporting paths", paths);
 
-    console.log("Exporting paths", paths);
+        return { paths, fallback: true };
+    } catch (err) {
+        console.error("ERR AT getStaticPaths()", err);
 
-    return { paths, fallback: true };
+        return { paths: [], fallback: true };
+    }
 }
 
 // This function gets called at build time
 export async function getStaticProps(context) {
-    const dotenv = require("dotenv");
-    const get = require("lodash/get");
+    try {
+        const dotenv = require("dotenv");
+        const get = require("lodash/get");
 
-    const {
-        getNotionPage,
-        getNotionPageFromDB,
-    } = require("../services/notion-service");
+        const {
+            getNotionPage,
+            getNotionPageFromDB,
+        } = require("../services/notion-service");
 
-    console.log("context.params", context.params);
+        console.log("context.params", context.params);
 
-    // pages are fetched from website json
-    // const websiteJson = require("../website.json");
+        // pages are fetched from website json
+        // const websiteJson = require("../website.json");
 
-    let path = get(context, "params.pname", []);
+        let path = get(context, "params.pname", []);
 
-    const formattedPath = `${"/" + encodeURI(path.join("/"))}`;
+        const formattedPath = `${"/" + encodeURI(path.join("/"))}`;
 
-    console.log(
-        "got env variables",
-        process.env.NS_BASE_API_URL,
-        process.env.NS_BUILD_EP,
-        process.env.NS_SITE_ID
-    );
-
-    // all other website properties are fetched at runtime (for further updating)
-    const websiteRes = await fetch(
-        process.env.NS_BASE_API_URL +
-            process.env.NS_BUILD_EP +
-            "/" +
+        console.log(
+            "got env variables",
+            process.env.NS_BASE_API_URL,
+            process.env.NS_BUILD_EP,
             process.env.NS_SITE_ID
-    );
+        );
 
-    const resJson = await websiteRes.json();
+        // all other website properties are fetched at runtime (for further updating)
+        const websiteRes = await fetch(
+            process.env.NS_BASE_API_URL +
+                process.env.NS_BUILD_EP +
+                "/" +
+                process.env.NS_SITE_ID
+        );
 
-    const pages = get(resJson, "payload.website.pages", []);
-    console.log("Got pages", pages.length);
+        const resJson = await websiteRes.json();
 
-    // global website details
-    const css = get(resJson, "payload.website.cssProd", "");
-    const html = get(resJson, "payload.website.htmlProd", "");
-    const javascript = get(resJson, "payload.website.javascriptProd", "");
+        const pages = get(resJson, "payload.website.pages", []);
+        console.log("Got pages", pages.length);
 
-    // const json = await res.json();
-    // console.log("GOT RES", json);
+        // global website details
+        const css = get(resJson, "payload.website.cssProd", "");
+        const html = get(resJson, "payload.website.htmlProd", "");
+        const javascript = get(resJson, "payload.website.javascriptProd", "");
 
-    // current page details
-    const currentPage = pages.find((p) => p.path === formattedPath);
-    const title = get(currentPage, "title", "");
-    const notionUrl = get(currentPage, "notionUrl");
+        // const json = await res.json();
+        // console.log("GOT RES", json);
 
-    const notionPage = await getNotionPageFromDB(
-        formattedPath,
-        process.env.NS_SITE_ID
-    );
+        // current page details
+        const currentPage = pages.find((p) => p.path === formattedPath);
+        const title = get(currentPage, "title", "");
+        const notionUrl = get(currentPage, "notionUrl");
 
-    console.log("Got notion Url", notionUrl);
-    console.log("title of this page is", title, formattedPath);
+        const notionPage = await getNotionPageFromDB(
+            formattedPath,
+            process.env.NS_SITE_ID
+        );
 
-    // const notionPage = await getNotionPage(notionUrl);
+        console.log("Got notion Url", notionUrl);
+        console.log("title of this page is", title, formattedPath);
 
-    if (notionPage) {
-        console.log("GOT NOTION PAGE", notionPage.id);
+        // const notionPage = await getNotionPage(notionUrl);
 
-        return {
-            props: {
-                notionBlocks: notionPage.notionBlocks,
-                title,
-                css,
-                html,
-                javascript,
-                // settings,
-                pages,
-            }, // will be passed to the page component as props
-            revalidate: 5,
-        };
-    } else {
-        console.log("DID NOT GET NOTION PAGE, null page");
+        if (notionPage) {
+            console.log("GOT NOTION PAGE", notionPage.id);
+
+            return {
+                props: {
+                    notionBlocks: notionPage.notionBlocks,
+                    title,
+                    css,
+                    html,
+                    javascript,
+                    // settings,
+                    pages,
+                }, // will be passed to the page component as props
+                revalidate: 5,
+            };
+        } else {
+            console.log("DID NOT GET NOTION PAGE, null page");
+
+            return {
+                props: {},
+            };
+        }
+    } catch (err) {
+        console.error("ERR AT getStaticProps()", err);
 
         return {
             props: {},
