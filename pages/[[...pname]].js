@@ -15,29 +15,14 @@ export default function Home(props) {
 
     const router = useRouter();
 
-    useEffect(() => {
-        if (!props.notionBlocks || router.isFallback) {
-            setTimeout(() => {
-                window.location.reload();
-            }, 3000);
-        }
+    // If the page is not yet generated, this will be displayed
+    // initially until getStaticProps() finishes running
+    if (router.isFallback) {
+        return <div>⚡ Preparing...</div>;
+    }
 
-        return () => {};
-    }, [router.isFallback, props.notionBlocks]);
-
-    if (!props.notionBlocks || router.isFallback) {
-        return (
-            <div
-                style={{
-                    height: "100vh",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                Preparing the page...
-            </div>
-        );
+    if (!props.notionBlocks) {
+        return null;
     }
 
     useEffect(() => {
