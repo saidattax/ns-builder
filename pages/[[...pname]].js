@@ -1,9 +1,8 @@
 //@ts-ignore
 import styles from "../styles/Home.module.css";
 
-import { NotionRenderer, Pdf } from "react-notion-x";
+import { Collection, CollectionRow, NotionRenderer, Pdf } from "react-notion-x";
 
-import "react-notion-x/src/styles.css";
 import { NotionId } from "../utils/string";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -37,7 +36,7 @@ export default function Home(props) {
 
         if (page) {
             return page.path;
-        } else return "/";
+        } else return "#";
     }
 
     const myProps = {
@@ -90,27 +89,39 @@ export default function Home(props) {
                 }}
             ></div>
 
-            <NotionRenderer
-                components={{
-                    pageLink: (props) => {
-                        // console.log("Link props", props);
+            <div>
+                <NotionRenderer
+                    components={{
+                        pageLink: (props) => {
+                            // console.log("Link props", props);
 
-                        return (
-                            <Link href={props.href}>
-                                <a className={props.className}>
-                                    {props.children}
-                                </a>
-                            </Link>
-                        );
-                    },
-                }}
-                mapPageUrl={(pageId) => {
-                    const p = getPrettyPath(pageId);
-                    return p;
-                }}
-                {...myProps}
-                recordMap={props.notionBlocks}
-            />
+                            if (props.href === "#") {
+                                return (
+                                    <a className={props.className}>
+                                        {props.children}
+                                    </a>
+                                );
+                            } else {
+                                return (
+                                    <Link href={props.href}>
+                                        <a className={props.className}>
+                                            {props.children}
+                                        </a>
+                                    </Link>
+                                );
+                            }
+                        },
+                        collection: Collection,
+                        collectionRow: CollectionRow,
+                    }}
+                    mapPageUrl={(pageId) => {
+                        const p = getPrettyPath(pageId);
+                        return p;
+                    }}
+                    {...myProps}
+                    recordMap={props.notionBlocks}
+                />
+            </div>
         </div>
     );
 }
@@ -209,14 +220,14 @@ export async function getStaticProps(context) {
         // current page details
         const currentPage = pages.find((p) => p.path === formattedPath);
         const title = get(currentPage, "title", "");
-        const notionUrl = get(currentPage, "notionUrl");
+        const notionUrl = get(currentPage, "notionUrl", "");
 
         const notionPage = await getNotionPageFromDB(
             formattedPath,
             process.env.NS_SITE_ID
         );
 
-        console.log("Got notion Url", notionUrl);
+        // console.log("Got notion Url", notionUrl);
         console.log("title of this page is", title, formattedPath);
 
         // const notionPage = await getNotionPage(notionUrl);

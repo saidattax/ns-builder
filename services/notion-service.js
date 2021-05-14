@@ -41,26 +41,46 @@ class NotionId {
     }
 }
 
+function parseRecordMap(r) {
+    if (r) {
+        if (typeof r === "object") {
+            return r;
+        }
+
+        if (typeof r === "string") {
+            return JSON.parse(r);
+        }
+    } else return null;
+}
+
 async function getNotionPageFromDB(path, websiteId) {
-    const BASE_API_URL = process.env.NS_BASE_API_URL;
+    try {
+        const BASE_API_URL = process.env.NS_BASE_API_URL;
 
-    console.log("[getNotionPageFromDB]", path, websiteId);
+        console.log("[getNotionPageFromDB]", path, websiteId);
 
-    const res = await fetch(
-        BASE_API_URL + `/websites/${websiteId}/pages?path=${encodeURI(path)}`
-    );
+        const res = await fetch(
+            BASE_API_URL +
+                `/websites/${websiteId}/pages?path=${encodeURI(path)}`
+        );
 
-    const json = await res.json();
+        const json = await res.json();
 
-    const page = json.payload.page;
+        const page = json.payload.page;
 
-    if (page && page.notionId && page.recordMap) {
-        return {
-            id: page.notionId,
-            notionBlocks: JSON.parse(page.recordMap),
-        };
-    } else {
-        console.log("error, page not found!");
+        console.log();
+
+        if (page) {
+            return {
+                id: page.notionId,
+                notionBlocks: parseRecordMap(page.recordMap),
+            };
+        } else {
+            console.log("error, page not found!");
+            return false;
+        }
+    } catch (err) {
+        console.error("ERR [getNotionPageFromDB]", err);
         return false;
     }
 }
