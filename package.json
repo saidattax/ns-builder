@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.14.0",
-        "dotenv": "^9.0.0",
+        "dotenv": "^9.0.2",
         "lodash": "^4.17.21",
         "next": "10.2.0",
         "node-fetch": "^2.6.1",
@@ -20,6 +20,6 @@
         "react-notion-x": "^4.6.0"
     },
     "devDependencies": {
-        "@netlify/plugin-nextjs": "^3.2.2"
+        "@netlify/plugin-nextjs": "^3.3.0"
     }
 }

@@ -68,8 +68,6 @@ async function getNotionPageFromDB(path, websiteId) {
 
         const page = json.payload.page;
 
-        console.log();
-
         if (page) {
             return {
                 id: page.notionId,
