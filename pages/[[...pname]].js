@@ -32,11 +32,15 @@ export default function Home(props) {
         // console.log("getPrettyPath", id, props.pages);
 
         const notionId = new NotionId(id);
+
         const page = props.pages.find((p) => p.notionId === notionId.plain);
 
         if (page) {
             return page.path;
-        } else return "#";
+        } else {
+            // console.log("Could not find pretty path for", id);
+            return "#";
+        }
     }
 
     const myProps = {
@@ -252,6 +256,7 @@ export async function getStaticProps(context) {
 
             return {
                 props: {},
+                revalidate: 5,
             };
         }
     } catch (err) {
@@ -259,6 +264,7 @@ export async function getStaticProps(context) {
 
         return {
             props: {},
+            revalidate: 5,
         };
     }
 }
