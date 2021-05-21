@@ -21,7 +21,7 @@ export default function Home(props) {
     }
 
     if (!props.notionBlocks) {
-        return null;
+        return <div>This page doesn't exist yet...</div>;
     }
 
     useEffect(() => {
@@ -71,7 +71,9 @@ export default function Home(props) {
 
     return (
         <div className={styles.selectText}>
-            <Head>{props.title && <title>{props.title}</title>}</Head>
+            <Head>
+                <title>{props.title || "Untitled"}</title>
+            </Head>
 
             <div
                 dangerouslySetInnerHTML={{
