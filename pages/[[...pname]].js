@@ -73,6 +73,18 @@ export default function Home(props) {
         <div className={styles.selectText}>
             <Head>
                 <title>{props.title || "Untitled"}</title>
+
+                {/* <meta name="description" content={description} /> */}
+
+                {/* og tags */}
+                <meta property="og:title" content={props.title || "Untitled"} />
+                <meta property="og:locale" content="en_US" />
+                {/* <meta property="og:description" content={description} /> */}
+                <meta
+                    property="og:image"
+                    itemProp="image"
+                    content={props.metaImage}
+                />
             </Head>
 
             <div
@@ -225,7 +237,6 @@ export async function getStaticProps(context) {
 
         // current page details
         const currentPage = pages.find((p) => p.path === formattedPath);
-        const title = get(currentPage, "title", "");
         const notionUrl = get(currentPage, "notionUrl", "");
 
         const notionPage = await getNotionPageFromDB(
@@ -233,21 +244,29 @@ export async function getStaticProps(context) {
             process.env.NS_SITE_ID
         );
 
+        const title = get(notionPage, "title", "");
+        const notionBlocks = get(notionPage, "recordMap", null);
+        const metaImage = get(notionPage, "metaImage", "");
+        const metaDescription = get(notionPage, "metaDescription", "");
+
         // console.log("Got notion Url", notionUrl);
         console.log("title of this page is", title, formattedPath);
 
         // const notionPage = await getNotionPage(notionUrl);
 
-        if (notionPage) {
-            console.log("GOT NOTION PAGE", notionPage.id);
+        if (notionPage && notionBlocks) {
+            console.log("GOT NOTION PAGE", notionPage.notionId);
 
             return {
                 props: {
-                    notionBlocks: notionPage.notionBlocks,
+                    notionBlocks: notionBlocks,
                     title,
                     css,
                     html,
                     javascript,
+                    // meta tags
+                    metaImage,
+                    metaDescription,
                     // settings,
                     pages,
                 }, // will be passed to the page component as props

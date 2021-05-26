@@ -70,8 +70,8 @@ async function getNotionPageFromDB(path, websiteId) {
 
         if (page) {
             return {
-                id: page.notionId,
-                notionBlocks: parseRecordMap(page.recordMap),
+                ...page,
+                recordMap: parseRecordMap(page.recordMap),
             };
         } else {
             console.log("error, page not found!");
