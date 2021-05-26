@@ -85,6 +85,9 @@ export default function Home(props) {
                     itemProp="image"
                     content={props.metaImage}
                 />
+
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:image" content={props.metaImage} />
             </Head>
 
             <div
