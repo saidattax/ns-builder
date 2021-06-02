@@ -55,7 +55,7 @@ export default function Home(props) {
         // pdf: "{$$typeof: Symbol(react.forward_ref), render: ƒ i()…}",
         // equation: "{$$typeof: Symbol(react.forward_ref), render: ƒ i()…}",
         // },
-        // rootPageId: "4db4066b-3873-40e8-a654-97d67b095f38",
+        // rootPageId: "",
         fullPage: true,
         darkMode: false,
         previewImages: true,
@@ -292,53 +292,3 @@ export async function getStaticProps(context) {
         };
     }
 }
-
-/* export async function getServerSideProps(context) {
-    const get = require("lodash/get");
-    const { getNotionPage } = require("../services/notion-service");
-
-    console.log("context query", context.query);
-
-    let path = get(context, "query.path", []);
-
-    const formattedPath = `${"/" + encodeURI(path.join("/"))}`;
-
-    const res = await fetch("http://localhost:5038/websites/public/" + slug);
-
-    const json = await res.json();
-
-    const pages = get(json, "payload.website.pages", []);
-    // TODO: const settings = get(json, "payload.website.settings", {});
-
-    console.log("GOT RES", json);
-
-    let page = {
-        id: "",
-        notionBlocks: null,
-    };
-
-    const p = pages.find((p) => p.path === formattedPath);
-
-    const notionUrl = get(p, "notionUrl");
-
-    console.log("Got notion Url", notionUrl);
-
-    if (notionUrl) {
-        const res = await getNotionPage(notionUrl);
-
-        if (res) {
-            page = res;
-        }
-    } else {
-        // redirect to 404
-    }
-
-    return {
-        props: {
-            notionBlocks: page.notionBlocks,
-            // settings,
-            pages,
-        }, // will be passed to the page component as props
-    };
-}
- */
