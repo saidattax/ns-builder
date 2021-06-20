@@ -18,7 +18,7 @@
         "notion-client": "^4.6.0",
         "react": "17.0.2",
         "react-dom": "17.0.2",
-        "react-notion-x": "saidattax/rnx-pkg"
+        "react-notion-x": "saidattax/rnx-pkg#v1.1.0"
     },
     "devDependencies": {}
 }
