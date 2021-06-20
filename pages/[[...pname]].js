@@ -8,41 +8,9 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { useEffect } from "react";
 import Head from "next/head";
+import RenderNotodoc from "../components/RenderNotodoc";
 
 export default function Home(props) {
-    // console.log("[Home]", props.notionBlocks);
-
-    const router = useRouter();
-
-    // If the page is not yet generated, this will be displayed
-    // initially until getStaticProps() finishes running
-    if (router.isFallback) {
-        return <div>⚡ Preparing...</div>;
-    }
-
-    if (!props.notionBlocks) {
-        return <div>This page doesn't exist yet...</div>;
-    }
-
-    useEffect(() => {
-        return () => {};
-    }, []);
-
-    function getPrettyPath(id) {
-        // console.log("getPrettyPath", id, props.pages);
-
-        const notionId = new NotionId(id);
-
-        const page = props.pages.find((p) => p.notionId === notionId.plain);
-
-        if (page) {
-            return page.path;
-        } else {
-            // console.log("Could not find pretty path for", id);
-            return "#";
-        }
-    }
-
     const myProps = {
         // bodyClassName: "not-notion-full-width index-page",
         // components: {
@@ -68,6 +36,41 @@ export default function Home(props) {
         pageFooter: null,
         // footer: "<Ae />",
     };
+
+    // console.log("[Home]", props.notionBlocks);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        return () => {};
+    }, []);
+
+    // --- Render Waterfall
+
+    // If the page is not yet generated, this will be displayed
+    // initially until getStaticProps() finishes running
+    if (router.isFallback) {
+        return <div>⚡ Preparing...</div>;
+    }
+
+    if (!props.notionBlocks) {
+        return <div>This page doesn't exist yet...</div>;
+    }
+
+    function getPrettyPath(id) {
+        // console.log("getPrettyPath", id, props.pages);
+
+        const notionId = new NotionId(id);
+
+        const page = props.pages.find((p) => p.notionId === notionId.plain);
+
+        if (page) {
+            return page.path;
+        } else {
+            // console.log("Could not find pretty path for", id);
+            return "#";
+        }
+    }
 
     return (
         <div className={styles.selectText}>
@@ -111,37 +114,41 @@ export default function Home(props) {
             ></div>
 
             <div>
-                <NotionRenderer
-                    components={{
-                        pageLink: (props) => {
-                            // console.log("Link props", props);
+                {props.isNotodoc && <RenderNotodoc {...props} />}
 
-                            if (props.href === "#") {
-                                return (
-                                    <a className={props.className}>
-                                        {props.children}
-                                    </a>
-                                );
-                            } else {
-                                return (
-                                    <Link href={props.href}>
+                {props.isPage && (
+                    <NotionRenderer
+                        components={{
+                            pageLink: (props) => {
+                                // console.log("Link props", props);
+
+                                if (props.href === "#") {
+                                    return (
                                         <a className={props.className}>
                                             {props.children}
                                         </a>
-                                    </Link>
-                                );
-                            }
-                        },
-                        collection: Collection,
-                        collectionRow: CollectionRow,
-                    }}
-                    mapPageUrl={(pageId) => {
-                        const p = getPrettyPath(pageId);
-                        return p;
-                    }}
-                    {...myProps}
-                    recordMap={props.notionBlocks}
-                />
+                                    );
+                                } else {
+                                    return (
+                                        <Link href={props.href}>
+                                            <a className={props.className}>
+                                                {props.children}
+                                            </a>
+                                        </Link>
+                                    );
+                                }
+                            },
+                            collection: Collection,
+                            collectionRow: CollectionRow,
+                        }}
+                        mapPageUrl={(pageId) => {
+                            const p = getPrettyPath(pageId);
+                            return p;
+                        }}
+                        {...myProps}
+                        recordMap={props.notionBlocks}
+                    />
+                )}
             </div>
         </div>
     );
@@ -227,6 +234,8 @@ export async function getStaticProps(context) {
 
         const resJson = await websiteRes.json();
 
+        console.log("Got websiteJson", JSON.stringify(resJson));
+
         const pages = get(resJson, "payload.website.pages", []);
         console.log("Got pages", pages.length);
 
@@ -234,6 +243,9 @@ export async function getStaticProps(context) {
         const css = get(resJson, "payload.website.cssProd", "");
         const html = get(resJson, "payload.website.htmlProd", "");
         const javascript = get(resJson, "payload.website.javascriptProd", "");
+        const drawerLinks = get(resJson, "payload.website.drawerLinks", []);
+        const notodocTitle = get(resJson, "payload.website.notodocTitle", "");
+        const notodocPageIcon = get(resJson, "payload.website.pageIcon", "");
 
         // const json = await res.json();
         // console.log("GOT RES", json);
@@ -251,9 +263,14 @@ export async function getStaticProps(context) {
         const notionBlocks = get(notionPage, "recordMap", null);
         const metaImage = get(notionPage, "metaImage", "");
         const metaDescription = get(notionPage, "metaDescription", "");
+        const isNotodoc = get(notionPage, "isNotodoc", false);
+        // if this page is notodoc
+        // const notodocId = get(notionPage, "notodocId", "");
 
         // console.log("Got notion Url", notionUrl);
-        console.log("title of this page is", title, formattedPath);
+        console.log("title of this page is", title, formattedPath, {
+            isNotodoc,
+        });
 
         // const notionPage = await getNotionPage(notionUrl);
 
@@ -272,6 +289,14 @@ export async function getStaticProps(context) {
                     metaDescription,
                     // settings,
                     pages,
+                    formattedPath,
+                    //
+                    isNotodoc,
+                    drawerLinks,
+                    notodocTitle,
+                    notodocPageIcon,
+                    //
+                    isPage: !isNotodoc, //!notodocId,
                 }, // will be passed to the page component as props
                 revalidate: 5,
             };
