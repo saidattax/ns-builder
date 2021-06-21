@@ -188,9 +188,11 @@ export async function getStaticPaths() {
 
         console.log("[getStaticPaths] Got pages", pages.length);
 
-        const paths = pages
+        let paths = pages
             // get only public paths
             .filter((p) => p.visibility === "PUBLIC")
+            // do not pre-render / path for notodocs
+            .filter((p) => (p.isNotodoc && p.path === "/" ? false : true))
             .map((p) => {
                 return {
                     params: {
