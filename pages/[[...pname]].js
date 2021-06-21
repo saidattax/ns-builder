@@ -206,11 +206,17 @@ export async function getStaticPaths() {
 
         console.log("Exporting paths", paths);
 
-        return { paths, fallback: true };
+        return {
+            paths,
+            // fallback: true
+        };
     } catch (err) {
         console.error("ERR AT getStaticPaths()", err);
 
-        return { paths: [], fallback: true };
+        return {
+            paths: [],
+            // fallback: true
+        };
     }
 }
 
@@ -331,14 +337,14 @@ export async function getStaticProps(context) {
                     //
                     isPage: !isNotodoc, //!notodocId,
                 }, // will be passed to the page component as props
-                revalidate: 5,
+                // revalidate: 5,
             };
         } else {
             console.log("DID NOT GET NOTION PAGE, null page");
 
             return {
                 props: {},
-                revalidate: 5,
+                // revalidate: 5,
             };
         }
     } catch (err) {
@@ -346,7 +352,7 @@ export async function getStaticProps(context) {
 
         return {
             props: {},
-            revalidate: 5,
+            // revalidate: 5,
         };
     }
 }
