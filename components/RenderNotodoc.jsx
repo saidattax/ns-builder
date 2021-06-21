@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import Head from "next/head";
 import cn from "classnames";
+const get = require("lodash/get");
 
 function RenderNotodoc(props) {
     console.log("RenderNotodoc", props);
@@ -16,7 +17,13 @@ function RenderNotodoc(props) {
 
     useEffect(() => {
         if (props.formattedPath === "/") {
-            router.push(props.pages[0].path);
+            console.log("formattedPath change");
+            let url = get(props, "drawerLinks[0].path", undefined);
+            url = url || get(props, "drawerLinks[0].paths[0].path", undefined);
+
+            if (url) {
+                router.push(url);
+            }
         }
 
         return () => {};
@@ -138,20 +145,22 @@ function RenderNotodoc(props) {
                         </svg>
                     </button>
                 </div>
-                <a href="/" className="nd-logo-container">
-                    {props.notodocPageIcon ? (
-                        props.notodocPageIcon.includes("https://") ? (
-                            <img
-                                src={props.notodocPageIcon}
-                                height="40px"
-                                className="nd-logo"
-                            />
-                        ) : (
-                            <div>{props.notodocPageIcon}</div>
-                        )
-                    ) : null}
-                    <div className="nd-logo-text">{props.notodocTitle}</div>
-                </a>
+                <Link href="/">
+                    <a className="nd-logo-container">
+                        {props.notodocPageIcon ? (
+                            props.notodocPageIcon.includes("https://") ? (
+                                <img
+                                    src={props.notodocPageIcon}
+                                    height="40px"
+                                    className="nd-logo"
+                                />
+                            ) : (
+                                <div>{props.notodocPageIcon}</div>
+                            )
+                        ) : null}
+                        <div className="nd-logo-text">{props.notodocTitle}</div>
+                    </a>
+                </Link>
                 <div className="nd-header-right"></div>
             </div>
             <div className="nd-main">
