@@ -12,7 +12,15 @@ function RenderNotodoc(props) {
 
     const router = useRouter();
 
-    const [showDrawer, setShowDrawer] = useState(true);
+    const [showDrawer, setShowDrawer] = useState(false);
+
+    useEffect(() => {
+        if (props.formattedPath === "/") {
+            router.push(props.pages[0].path);
+        }
+
+        return () => {};
+    }, [props.formattedPath]);
 
     const myProps = {
         // bodyClassName: "not-notion-full-width index-page",
