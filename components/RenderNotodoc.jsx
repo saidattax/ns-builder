@@ -13,6 +13,16 @@ function RenderNotodoc(props) {
 
     const router = useRouter();
 
+    if (props.formattedPath === "/" && typeof window !== "undefined") {
+        console.log("redir");
+        let url = get(props, "drawerLinks[0].path", undefined);
+        url = url || get(props, "drawerLinks[0].paths[0].path", undefined);
+
+        if (url) {
+            router.push(url);
+        }
+    }
+
     const [showDrawer, setShowDrawer] = useState(false);
 
     const [homeUrl, setHomeUrl] = useState("/");
@@ -27,19 +37,6 @@ function RenderNotodoc(props) {
 
         return () => {};
     }, []);
-
-    useEffect(() => {
-        if (props.formattedPath === "/") {
-            let url = get(props, "drawerLinks[0].path", undefined);
-            url = url || get(props, "drawerLinks[0].paths[0].path", undefined);
-
-            if (url) {
-                router.push(url);
-            }
-        }
-
-        return () => {};
-    }, [props.formattedPath]);
 
     const myProps = {
         // bodyClassName: "not-notion-full-width index-page",
