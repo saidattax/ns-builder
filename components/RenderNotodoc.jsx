@@ -9,19 +9,9 @@ import cn from "classnames";
 const get = require("lodash/get");
 
 function RenderNotodoc(props) {
-    console.log("RenderNotodoc", props);
+    // console.log("RenderNotodoc", props);
 
     const router = useRouter();
-
-    if (props.formattedPath === "/" && typeof window !== "undefined") {
-        console.log("redir");
-        let url = get(props, "drawerLinks[0].path", undefined);
-        url = url || get(props, "drawerLinks[0].paths[0].path", undefined);
-
-        if (url) {
-            router.push(url);
-        }
-    }
 
     const [showDrawer, setShowDrawer] = useState(false);
 

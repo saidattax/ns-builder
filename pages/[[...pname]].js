@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import Head from "next/head";
 import RenderNotodoc from "../components/RenderNotodoc";
+import get from "lodash/get";
 
 export default function Home(props) {
     const myProps = {
@@ -56,6 +57,20 @@ export default function Home(props) {
     if (!props.notionBlocks) {
         return <div>This page doesn't exist yet...</div>;
     }
+
+    /* if (
+        props.isNotodoc &&
+        props.formattedPath === "/" &&
+        typeof window !== "undefined"
+    ) {
+        console.log("redir");
+        let url = get(props, "drawerLinks[0].path", undefined);
+        url = url || get(props, "drawerLinks[0].paths[0].path", undefined);
+
+        if (url) {
+            router.push(url);
+        }
+    } */
 
     function getPrettyPath(id) {
         // console.log("getPrettyPath", id, props.pages);
@@ -234,7 +249,7 @@ export async function getStaticProps(context) {
 
         const resJson = await websiteRes.json();
 
-        console.log("Got websiteJson", JSON.stringify(resJson));
+        // console.log("Got websiteJson", JSON.stringify(resJson));
 
         const pages = get(resJson, "payload.website.pages", []);
         console.log("Got pages", pages.length);
@@ -276,6 +291,22 @@ export async function getStaticProps(context) {
 
         if (notionPage && notionBlocks) {
             console.log("GOT NOTION PAGE", notionPage.notionId);
+
+            if (isNotodoc && formattedPath === "/") {
+                let toPath = get(drawerLinks, "[0].path", undefined);
+                toPath =
+                    toPath || get(drawerLinks, "[0].paths[0].path", undefined);
+
+                console.log("toPath", toPath);
+                console.log("context", context);
+
+                return {
+                    redirect: {
+                        destination: toPath,
+                        permanent: false,
+                    },
+                };
+            }
 
             return {
                 props: {
