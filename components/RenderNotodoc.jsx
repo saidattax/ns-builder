@@ -15,9 +15,21 @@ function RenderNotodoc(props) {
 
     const [showDrawer, setShowDrawer] = useState(false);
 
+    const [homeUrl, setHomeUrl] = useState("/");
+
+    useEffect(() => {
+        let url = get(props, "drawerLinks[0].path", undefined);
+        url = url || get(props, "drawerLinks[0].paths[0].path", undefined);
+
+        if (url) {
+            setHomeUrl(url);
+        }
+
+        return () => {};
+    }, []);
+
     useEffect(() => {
         if (props.formattedPath === "/") {
-            console.log("formattedPath change");
             let url = get(props, "drawerLinks[0].path", undefined);
             url = url || get(props, "drawerLinks[0].paths[0].path", undefined);
 
@@ -145,7 +157,7 @@ function RenderNotodoc(props) {
                         </svg>
                     </button>
                 </div>
-                <Link href="/">
+                <Link href={homeUrl}>
                     <a className="nd-logo-container">
                         {props.notodocPageIcon ? (
                             props.notodocPageIcon.includes("https://") ? (
