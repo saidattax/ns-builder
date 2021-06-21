@@ -208,14 +208,14 @@ export async function getStaticPaths() {
 
         return {
             paths,
-            // fallback: true
+            fallback: false,
         };
     } catch (err) {
         console.error("ERR AT getStaticPaths()", err);
 
         return {
             paths: [],
-            // fallback: true
+            fallback: false,
         };
     }
 }
