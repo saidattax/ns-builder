@@ -1,7 +1,13 @@
 //@ts-ignore
 import styles from "../styles/Home.module.css";
 
-import { Collection, CollectionRow, NotionRenderer, Pdf } from "react-notion-x";
+import {
+    Code,
+    Collection,
+    CollectionRow,
+    NotionRenderer,
+    Pdf,
+} from "react-notion-x";
 
 import { NotionId } from "../utils/string";
 import { useRouter } from "next/router";
@@ -134,6 +140,7 @@ export default function Home(props) {
                 {props.isPage && (
                     <NotionRenderer
                         components={{
+                            code: Code,
                             pageLink: (props) => {
                                 // console.log("Link props", props);
 

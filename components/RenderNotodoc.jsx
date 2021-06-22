@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Collection, CollectionRow, NotionRenderer, Pdf } from "react-notion-x";
+import {
+    Code,
+    Collection,
+    CollectionRow,
+    NotionRenderer,
+    Pdf,
+} from "react-notion-x";
 import { NotionId } from "../utils/string";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -93,7 +99,7 @@ function RenderNotodoc(props) {
                 return (
                     <div>
                         <div className="nd-drawer-group-title">{l.title}</div>
-                        <div>
+                        <div className="nd-drawer-group-container">
                             {l.paths.map((e) => {
                                 return (
                                     <>
@@ -204,6 +210,7 @@ function RenderNotodoc(props) {
                             <h1 className="nd-padding">{props.title}</h1>
                             <NotionRenderer
                                 components={{
+                                    code: Code,
                                     pageLink: (props) => {
                                         // console.log("Link props", props);
 

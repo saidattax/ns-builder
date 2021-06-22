@@ -181,6 +181,10 @@ body {
 .nd-drawer-page-link-wrapper {
 }
 
+.nd-drawer-group-container {
+    padding-left: 1rem;
+}
+
 .nd-drawer-group-title {
     margin-top: 2rem;
     margin-bottom: 2rem;
