@@ -96,18 +96,22 @@ function RenderNotodoc(props) {
                         <div>
                             {l.paths.map((e) => {
                                 return (
-                                    <Link href={e.path}>
-                                        <a
-                                            onClick={() => setShowDrawer(false)}
-                                            className={cn(
-                                                "nd-drawer-page-link",
-                                                router.asPath === e.path &&
-                                                    "active"
-                                            )}
-                                        >
-                                            {e.title}
-                                        </a>
-                                    </Link>
+                                    <>
+                                        <Link href={e.path}>
+                                            <a
+                                                onClick={() =>
+                                                    setShowDrawer(false)
+                                                }
+                                                className={cn(
+                                                    "nd-drawer-page-link",
+                                                    router.asPath === e.path &&
+                                                        "active"
+                                                )}
+                                            >
+                                                {e.title}
+                                            </a>
+                                        </Link>
+                                    </>
                                 );
                             })}
                         </div>

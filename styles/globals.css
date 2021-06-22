@@ -98,6 +98,9 @@ body {
     display: flex;
     border-right: 1px solid #e0e0e0;
     padding: 2rem;
+    overflow-y: scroll;
+    flex: 1;
+    height: calc(100vh - 70px);
 }
 
 @media only screen and (max-width: 600px) {
@@ -143,6 +146,8 @@ body {
     border-radius: 8px;
     background-color: white;
     border: 1px solid #9e9e9e;
+    height: calc(100vh - 70px);
+    overflow-y: scroll;
 }
 
 .nd-content {
